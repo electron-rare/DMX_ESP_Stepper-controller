@@ -1,11 +1,13 @@
 #define nb_dmx_channel 2                  // nombre de canaux DMX utilisés
-#define pos_array 1                       // position de la position dans le tableau DMX_data
-#define speed_array 2                     // position de la vitesse dans le tableau DMX_data
+#define pos_array 0                       // position de la position dans le tableau DMX_data
+#define speed_array 1                     // position de la vitesse dans le tableau DMX_data
+
 int DMX_start_channel;                    // numéro de la première adresse DMX
 int pos_channel;                          // numéro de l'adresse DMX de la position
 int speed_channel;                        // numéro de l'adresse DMX de la vitesse
 const dmx_port_t dmx_num = DMX_NUM_2;     // numéro du port DMX
 byte data[DMX_PACKET_SIZE];               // tableau de données DMX
+
 bool dmxIsConnected = false;              // état de la connexion DMX
 unsigned long lastUpdate = millis();      // temps de la dernière mise à jour des données DMX
 uint8_t DMX_data[nb_dmx_channel + 1];     // tableau de données DMX
@@ -13,8 +15,9 @@ uint8_t DMX_data_old[nb_dmx_channel + 1]; // tableau de données DMX précédent
 bool dataChanged[nb_dmx_channel + 1];     // tableau de drapeau pour donnée DMX ayant changées
 unsigned long last_connected_Time = 0;    // temps de la dernière connexion DMX
 unsigned long last_disconnected_Time = 0; // temps de la dernière déconnexion DMX
+
 #define DMX_Connected_Time 1000           // temps en ms entre chaque vérification de la connexion DMX
-#define DMX_Read_Time 500                  // temps en ms entre chaque mise à jour des données DMX
+#define DMX_Read_Time 200                 // temps en ms entre chaque mise à jour des données DMX
 #define dmx_debounce_try 0                // nombre de boucle pour le debounce DMX afin d'éviter les valeurs de 0 ou 255 erronées
 int dmx_count[nb_dmx_channel + 1];        // compteur de boucle pour le debounce DMX afin d'éviter les valeurs de 0 ou 255 erronées
 
@@ -23,7 +26,7 @@ int readSwitch();         // fonction pour lire le codeur d'adresse DMX
 void reset_dmx_counter(); // fonction pour réinitialiser le compteur de boucle pour le debounce DMX afin d'éviter les valeurs de 0 ou 255 erronées
 void receiveDMX();        // fonction pour recevoir les données DMX
 
-int readSwitch()
+int readSwitch() // fonction pour lire le codeur d'adresse DMX
 {
   int total = 0;
   if (digitalRead(q1) == HIGH)
@@ -42,10 +45,12 @@ int readSwitch()
   {
     total += 8;
   }
+  total = ((total + 1) * 2) - 1; // correction battarde de l'adresse DMX
+
   return total;
 }
 
-void reset_dmx_counter()
+void reset_dmx_counter() // fonction pour réinitialiser le compteur de boucle pour le debounce DMX afin d'éviter les valeurs de 0 ou 255 erronées
 {
   for (int i = 0; i < nb_dmx_channel + 1; i++)
   {
@@ -53,17 +58,8 @@ void reset_dmx_counter()
   }
 }
 
-void receiveDMX()
+void receiveDMX() // fonction pour recevoir les données DMX
 {
-  // set channel
-  // #ifndef dev_mode
-  //  DMX_start_channel = readSwitch();
-  // #else
-  DMX_start_channel = 1;
-  pos_channel = DMX_start_channel;
-  speed_channel = DMX_start_channel + 1;
-  // #endif
-
   dmx_packet_t packet;
   if (dmx_receive(dmx_num, &packet, DMX_TIMEOUT_TICK))
   {
