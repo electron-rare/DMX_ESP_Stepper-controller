@@ -114,7 +114,7 @@ void loop()
   receiveDMX(); // reception des données DMX
 
   // mise à jour de la vitesse du moteur si la valeur DMX a changée
-  if (dataChanged[speed_array])
+  if (dataChanged[speed_array] == true)
   {
     dataChanged[speed_array] = false;
     Serial.printf("dmx speed receive => %ld\n", DMX_data[speed_array]);
@@ -127,11 +127,9 @@ void loop()
   {
     // stepper.setTargetPositionToStop();
     dataChanged[pos_array] = false;
-    pos_in_step = map(DMX_data[pos_array], 0, 255, min_steps, max_steps);
+    pos_in_step = map(DMX_data[pos_array], 255, 0, min_steps, max_steps);
+    // pos_map(); // fonction pour convertir la valeur DMX en position
     stepper.setTargetPositionInSteps(pos_in_step);
-    Serial.printf("acceleration => %ld\n", speed_in_accel);
-    Serial.printf("deceleration => %i\n", speed_in_decel);
-    Serial.printf("dmx pos to step => %ld\n", pos_in_step);
     DMX_data_old[pos_array] = DMX_data[pos_array];
     last_dmx_change_pos = millis();
   }
@@ -144,7 +142,8 @@ void loop()
       Serial.println("!!!!!!!!!!!!! home not reached");
       Serial.printf("codeur pos => %i\n", codeur_pos);
       // stepper.setTargetPositionInSteps(min_steps - codeur_pos); // home_steps
-      stepper.setTargetPositionRelativeInSteps(-nb_microstep);
+      int step_add = nb_microstep * 2;
+      stepper.setTargetPositionRelativeInSteps(-step_add);
       delay(100);
     }
     else if (pos_in_step >= max_steps && ConfirmedLimitSwitchState != switch_active && stepper.getDirectionOfMotion() == 0)
@@ -152,7 +151,8 @@ void loop()
       Serial.println("!!!!!!!!!!!!! limit not reached");
       Serial.printf("codeur pos => %i\n", codeur_pos);
       // stepper.setTargetPositionInSteps(max_steps + (max_steps - codeur_pos)); // limit_steps
-      stepper.setTargetPositionRelativeInSteps(nb_microstep);
+      int step_add = nb_microstep * 2;
+      stepper.setTargetPositionRelativeInSteps(step_add);
       delay(100);
     }
     else if (abs(codeur_pos - pos_in_step) > 100 && stepper.getDirectionOfMotion() == 0)
@@ -163,7 +163,6 @@ void loop()
       stepper.setTargetPositionInSteps(pos_in_step);
     }
   }
-
   // motor_follower(emergency_stop_loss_step); // fonction pour suivre la position du moteur et la perte de pas
   emergency_check(); // fonction pour la sécurité si un obstacle est détecté par la perte de pas du moteur
   limit_check();     // fonction pour la sécurité si un obstacle est détecté par le bouton poussoir

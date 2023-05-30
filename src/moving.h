@@ -1,5 +1,5 @@
 
-#define nb_microstep 8        // nombre de microstep configuré sur le driver moteur
+#define nb_microstep 8         // nombre de microstep configuré sur le driver moteur
 #define STEP_PER_REV_MOTOR 200 // nombre de pas par tour du moteur
 #define CPR_ENCODER 4000       // nombre de pas par tour du codeur optique
 /*
@@ -23,9 +23,11 @@ Nb              SW1     SW2     SW3     SW4
 */
 #define SECOND_PER_REV 2                                                                       // nombre de seconde pour faire un tour
 const int STEP_PER_REV = nb_microstep * STEP_PER_REV_MOTOR;                                    // nombre de pas par tour du moteur
-const int MIN_SPEED = 0;                                                                       // vitesse minimum du moteur
+const int MIN_SPEED = 1;                                                                       // vitesse minimum du moteur
 const int MAX_SPEED = ((STEP_PER_REV / 2) / SECOND_PER_REV) * nb_microstep;                    // vitesse maximum du moteur (1/2 révolution par SECOND_PER_REV seconde)
-const int SPEED_IN_STEPS_PER_SECOND = MAX_SPEED / 2;                                           // vitesse initiale de déplacement du moteur = 1/2 de la vitesse maximum
+//const int MAX_SPEED = ((STEP_PER_REV / 2) / SECOND_PER_REV) * nb_microstep;                    // vitesse maximum du moteur (1/2 révolution par SECOND_PER_REV seconde)
+
+const int SPEED_IN_STEPS_PER_SECOND = STEP_PER_REV;                                           // vitesse initiale de déplacement du moteur = 1/2 de la vitesse maximum
 const int ACCELERATION_IN_STEPS_PER_SECOND = nb_microstep * 2;                                 // accélération initiale du moteur
 const int DECELERATION_IN_STEPS_PER_SECOND = nb_microstep;                                     // décélération initiale du moteur
 int ACC_DEC_REMOVE_STEP = ACCELERATION_IN_STEPS_PER_SECOND + DECELERATION_IN_STEPS_PER_SECOND; // nombre de pas à enlever à la position pour l'accélération et la décélération ?
@@ -40,8 +42,8 @@ const int max_offset = nb_microstep * 5; // max offset pour le potentiomètre de
 
 volatile unsigned long last_dmx_change_pos;
 
-volatile int speed_in_accel = MAX_SPEED / 10; // variable pour la vitesse d'acceleration
-volatile int speed_in_decel = DECELERATION_IN_STEPS_PER_SECOND;      // variable pour la vitesse de deceleration
+volatile int speed_in_accel = MAX_SPEED / 10;                   // variable pour la vitesse d'acceleration
+volatile int speed_in_decel = DECELERATION_IN_STEPS_PER_SECOND; // variable pour la vitesse de deceleration
 
 // fonction
 void targetPositionReachedCallback(long position); // callback function as the target position is reached
@@ -66,8 +68,10 @@ void speed_map() // fonction de mapping de la vitesse du moteur avec accélérat
 
 void pos_map() // fonction de mapping de la position du moteur
 {
-  int pos_in_step = map(DMX_data[pos_array], 0, 255, min_steps - home_steps, max_steps + limit_steps);
+  int pos_in_step = map(DMX_data[pos_array], 255, 0, min_steps, max_steps);
+  //int pos_in_step = map(DMX_data[pos_array], 0, 255, min_steps - home_steps, max_steps + limit_steps); // fait dans la fonction limit_check
   stepper.setTargetPositionInSteps(pos_in_step);
+  Serial.printf("dmx pos to step => %ld\n", pos_in_step);
 }
 
 void set_min() // fonction pour position minimum de la plage de déplacement du moteur
