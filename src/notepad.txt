@@ -1,8 +1,0 @@
-https://github.com/arttupii/CLSMB Closed loop step motor controller
-
-https://www.switchdoc.com/2018/04/esp32-tutorial-debouncing-a-button-press-using-interrupts/
-avec vtask pour plus d'efficacité
-
-voir pour mieur gérer le homming avec les fonctions explicité dans la lib felxystepper
-
-rajouter plus de délai à la lecture dmx pour mieux éviter les problème de chanement de valeurs trop rapide
