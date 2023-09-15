@@ -6,6 +6,7 @@ int DMX_start_channel;                    // numéro de la première adresse DMX
 int pos_channel;                          // numéro de l'adresse DMX de la position
 int speed_channel;                        // numéro de l'adresse DMX de la vitesse
 const dmx_port_t dmx_num = DMX_NUM_2;     // numéro du port DMX
+dmx_config_t config = DMX_CONFIG_DEFAULT; // configuration du port DMX
 byte data[DMX_PACKET_SIZE];               // tableau de données DMX
 
 bool dmxIsConnected = false;              // état de la connexion DMX

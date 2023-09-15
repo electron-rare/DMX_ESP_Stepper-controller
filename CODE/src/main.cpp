@@ -20,6 +20,7 @@ https://www.omc-stepperonline.com/download/34HS59-6004D-E1000.pdf
 
 Controleur CL86T V4.0
 https://www.omc-stepperonline.com/index.php?route=product/product/get_file&file=389/CL86T%20(V4.0).pdf
+
 */
 
 #include "PIN_mapping.h"    // fichier contenant les variables globales et le mapping des pins
@@ -38,6 +39,7 @@ ESP32Encoder encoder;     // création de l'objet encoder
 #include "moving.h"   // fichier contenant les fonctions de mouvement
 #include "security.h" // fichier contenant les fonctions de sécurité type emergency stop
 
+
 void setup()
 {
   // delay(1000);
@@ -45,7 +47,7 @@ void setup()
   Serial.println("started");
 
   dmx_set_pin(dmx_num, tx_pin, rx_pin, rts_pin);
-  dmx_driver_install(dmx_num, DMX_DEFAULT_INTR_FLAGS);
+dmx_driver_install(dmx_num, &config, DMX_INTR_FLAGS_DEFAULT);
 
   // configuration encoder pour suivre la position du moteur et la perte de pas
   encoder.attachHalfQuad(EB_plus, EA_plus);
