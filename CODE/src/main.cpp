@@ -1,6 +1,5 @@
-
 /*
-controle de moteur pas à pas selon commande DMX
+controle de position et vitesse pour moteur pas à pas selon commande DMX
 
 code par Clément SAILLANT pour Hémisphère - 2023
 c.saillant@gmail.com
@@ -20,7 +19,6 @@ https://www.omc-stepperonline.com/download/34HS59-6004D-E1000.pdf
 
 Controleur CL86T V4.0
 https://www.omc-stepperonline.com/index.php?route=product/product/get_file&file=389/CL86T%20(V4.0).pdf
-
 */
 
 #include "PIN_mapping.h"    // fichier contenant les variables globales et le mapping des pins
