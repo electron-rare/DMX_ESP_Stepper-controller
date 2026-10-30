@@ -7,7 +7,7 @@ Contrôleur de moteur pas à pas piloté en DMX, sur ESP32 : la position et la v
 
 
 
-Clément SAILLANT pour Hémisphère - 2023
+Clément SAILLANT, pour Hémisphère — création de l Opéra de Montpellier, 2023
 
 clement@lelectronrare.fr
 <img width="545" alt="3D view" src="https://github.com/electron-rare/DMX_ESP_Stepper-controller/assets/108685187/e1c40d03-097e-4f09-b654-c9919626e945">
